@@ -3,7 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:parafare/l10n/app_localizations.dart';
 
 import '../../core/providers.dart';
 import '../../map/view.dart';
@@ -28,7 +28,7 @@ class _PassengerDashState extends ConsumerState<PassengerDash> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final tile = ref.watch(tilePathProvider);
+    final tile = ref.watch(pmTilesProvider);
     final graph = ref.watch(graphProvider);
     final fare = ref.read(fareServiceProvider).fareFor(km);
 
@@ -38,7 +38,7 @@ class _PassengerDashState extends ConsumerState<PassengerDash> {
         data: (g) => tile.when(
           data: (path) => Stack(children: [
             OfflineMapView(
-              pmtilesPath: path,
+              tileProvider: path,
               center: const LatLng(6.1164, 125.1716),
               onTap: (p) {
                 setState(() {

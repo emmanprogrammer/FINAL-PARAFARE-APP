@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_pmtiles/flutter_map_pmtiles.dart';
 import 'package:latlong2/latlong.dart';
 
 class OfflineMapView extends StatelessWidget {
-  const OfflineMapView({super.key, required this.pmtilesPath, required this.center, this.markers = const [], this.polylines = const [], this.onTap});
+  const OfflineMapView({super.key, required this.tileProvider, required this.center, this.markers = const [], this.polylines = const [], this.onTap});
 
-  final String pmtilesPath;
+  final TileProvider tileProvider;
   final LatLng center;
   final List<Marker> markers;
   final List<Polyline> polylines;
@@ -26,7 +25,7 @@ class OfflineMapView extends StatelessWidget {
         onTap: (_, point) => onTap?.call(point),
       ),
       children: [
-        TileLayer(tileProvider: PmTilesProvider.fromPath(pmtilesPath)),
+        TileLayer(tileProvider: tileProvider),
         if (polylines.isNotEmpty) PolylineLayer(polylines: polylines),
         if (markers.isNotEmpty) MarkerLayer(markers: markers),
       ],

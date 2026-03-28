@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:parafare/l10n/app_localizations.dart';
 
 import '../models.dart';
 
@@ -11,7 +11,7 @@ class SlotCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Card(
       child: InkWell(
         onTap: onTap,
@@ -24,9 +24,9 @@ class SlotCard extends StatelessWidget {
               Text(l10n.empty, style: const TextStyle(color: Colors.green)),
               Text(l10n.tapToAddRide),
             ] else ...[
-              Text('${ride.originNodeId} → ${ride.destinationNodeId}'),
-              Text('${ride.distanceKm.toStringAsFixed(2)} km • ${ride.etaMinutes} min'),
-              Text('₱${ride.fare.toStringAsFixed(2)}'),
+              Text('${ride!.originNodeId} → ${ride!.destinationNodeId}'),
+              Text('${ride!.distanceKm.toStringAsFixed(2)} km • ${ride!.etaMinutes} min'),
+              Text('₱${ride!.fare.toStringAsFixed(2)}'),
             ]
           ]),
         ),

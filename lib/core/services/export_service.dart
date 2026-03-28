@@ -7,7 +7,7 @@ import '../../driver/models.dart';
 
 class ExportService {
   Future<String> exportRides(List<Ride> rides) async {
-    final rows = [
+    final List<List<dynamic>> rows = [
       ['driverId', 'slot', 'originNodeId', 'destinationNodeId', 'distanceKm', 'fare', 'createdAt', 'completedAt']
     ];
     rows.addAll(rides.map((r) => [r.driverId, r.slot, r.originNodeId, r.destinationNodeId, r.distanceKm, r.fare, r.createdAt.toIso8601String(), r.completedAt?.toIso8601String() ?? '']));

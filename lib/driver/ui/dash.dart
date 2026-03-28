@@ -3,7 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:parafare/l10n/app_localizations.dart';
 
 import '../../core/providers.dart';
 import '../../map/view.dart';
@@ -15,7 +15,7 @@ class DriverDash extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final tile = ref.watch(tilePathProvider);
+    final tile = ref.watch(pmTilesProvider);
     final state = ref.watch(driverCtrlProvider);
     return Scaffold(
       appBar: AppBar(
@@ -30,7 +30,7 @@ class DriverDash extends ConsumerWidget {
           children: [
             Expanded(
               child: OfflineMapView(
-                pmtilesPath: path,
+                tileProvider: path,
                 center: const LatLng(6.1164, 125.1716),
                 markers: [
                   Marker(point: const LatLng(6.1164, 125.1716), width: 20, height: 20, child: const DecoratedBox(decoration: BoxDecoration(color: Colors.blue, shape: BoxShape.circle)))

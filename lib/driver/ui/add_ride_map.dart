@@ -3,7 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:parafare/l10n/app_localizations.dart';
 
 import '../../core/providers.dart';
 import '../../map/view.dart';
@@ -34,7 +34,7 @@ class _AddRideMapState extends ConsumerState<AddRideMap> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final graph = ref.watch(graphProvider);
-    final tile = ref.watch(tilePathProvider);
+    final tile = ref.watch(pmTilesProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.addRide)),
@@ -43,7 +43,7 @@ class _AddRideMapState extends ConsumerState<AddRideMap> {
           data: (pm) => Column(children: [
             Expanded(
               child: OfflineMapView(
-                pmtilesPath: pm,
+                tileProvider: pm,
                 center: const LatLng(6.1164, 125.1716),
                 onTap: (p) {
                   setState(() {
