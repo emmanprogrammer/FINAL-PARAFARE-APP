@@ -59,6 +59,7 @@ class AppLocalizations {
       'updated': 'Updated',
       'save': 'Save',
       'tripDetail': 'Trip detail',
+      'mapUnavailable': 'Offline map tiles unavailable. Add a valid gensan.pmtiles asset.',
     },
     'fil': {
       'appName': 'ParaFare',
@@ -104,6 +105,7 @@ class AppLocalizations {
       'updated': 'Na-update',
       'save': 'I-save',
       'tripDetail': 'Detalye ng biyahe',
+      'mapUnavailable': 'Walang offline map tiles. Maglagay ng valid na gensan.pmtiles asset.',
     }
   };
 
@@ -152,6 +154,7 @@ class AppLocalizations {
   String get updated => _t('updated');
   String get save => _t('save');
   String get tripDetail => _t('tripDetail');
+  String get mapUnavailable => _t('mapUnavailable');
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

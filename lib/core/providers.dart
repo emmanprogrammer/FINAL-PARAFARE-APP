@@ -28,8 +28,13 @@ final localeProvider = StateProvider<Locale?>((ref) {
   return raw == null ? null : Locale(raw);
 });
 
-final tilePathProvider = FutureProvider<String>((ref) => ref.watch(tileServiceProvider).ensurePmtiles());
-final pmTilesProvider = FutureProvider<TileProvider>((ref) async {
+final tilePathProvider = FutureProvider<String?>((ref) => ref.watch(tileServiceProvider).ensurePmtiles());
+final pmTilesProvider = FutureProvider<TileProvider?>((ref) async {
   final path = await ref.watch(tilePathProvider.future);
-  return PmTilesTileProvider.fromSource(path);
+  if (path == null) return null;
+  try {
+    return PmTilesTileProvider.fromSource(path);
+  } catch (_) {
+    return null;
+  }
 });
