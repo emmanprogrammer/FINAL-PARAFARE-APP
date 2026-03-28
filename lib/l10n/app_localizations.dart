@@ -60,6 +60,7 @@ class AppLocalizations {
       'save': 'Save',
       'tripDetail': 'Trip detail',
       'mapUnavailable': 'Offline map tiles unavailable. Add a valid gensan.pmtiles asset.',
+      'sameNodeError': 'Origin and destination cannot be the same node.',
     },
     'fil': {
       'appName': 'ParaFare',
@@ -106,6 +107,7 @@ class AppLocalizations {
       'save': 'I-save',
       'tripDetail': 'Detalye ng biyahe',
       'mapUnavailable': 'Walang offline map tiles. Maglagay ng valid na gensan.pmtiles asset.',
+      'sameNodeError': 'Hindi puwedeng pareho ang origin at destination node.',
     }
   };
 
@@ -155,6 +157,7 @@ class AppLocalizations {
   String get save => _t('save');
   String get tripDetail => _t('tripDetail');
   String get mapUnavailable => _t('mapUnavailable');
+  String get sameNodeError => _t('sameNodeError');
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

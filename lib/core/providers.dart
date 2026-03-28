@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_pmtiles/flutter_map_pmtiles.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,13 +26,4 @@ final localeProvider = StateProvider<Locale?>((ref) {
   return raw == null ? null : Locale(raw);
 });
 
-final tilePathProvider = FutureProvider<String?>((ref) => ref.watch(tileServiceProvider).ensurePmtiles());
-final pmTilesProvider = FutureProvider<TileProvider?>((ref) async {
-  final path = await ref.watch(tilePathProvider.future);
-  if (path == null) return null;
-  try {
-    return PmTilesTileProvider.fromSource(path);
-  } catch (_) {
-    return null;
-  }
-});
+final mapAssetBundleProvider = FutureProvider<MapAssetBundle?>((ref) => ref.watch(tileServiceProvider).ensureMapAssets());

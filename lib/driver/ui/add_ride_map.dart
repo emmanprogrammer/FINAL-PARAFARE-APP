@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
@@ -32,18 +31,18 @@ class _AddRideMapState extends ConsumerState<AddRideMap> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final graph = ref.watch(graphProvider);
-    final tile = ref.watch(pmTilesProvider);
+    final mapAssets = ref.watch(mapAssetBundleProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.addRide)),
       body: graph.when(
-        data: (g) => tile.when(
-          data: (pm) => Column(children: [
+        data: (g) => mapAssets.when(
+          data: (bundle) => Column(children: [
             Expanded(
               child: OfflineMapView(
-                tileProvider: pm,
+                stylePath: bundle?.stylePath,
                 center: const LatLng(6.1164, 125.1716),
                 onTap: (p) {
                   setState(() {
@@ -51,8 +50,15 @@ class _AddRideMapState extends ConsumerState<AddRideMap> {
                       origin = p;
                       oNode = GraphSnap.nearestNodeId(g, p);
                     } else if (destination == null) {
+                      final candidateDestNode = GraphSnap.nearestNodeId(g, p);
+                      if (candidateDestNode == oNode) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(l10n.sameNodeError)),
+                        );
+                        return;
+                      }
                       destination = p;
-                      dNode = GraphSnap.nearestNodeId(g, p);
+                      dNode = candidateDestNode;
                       final result = DijkstraPath.shortestPath(g, oNode!, dNode!);
                       routeNodes = result.nodeIds;
                       route = routeCoords(g, result.nodeIds);
@@ -62,10 +68,10 @@ class _AddRideMapState extends ConsumerState<AddRideMap> {
                   });
                 },
                 markers: [
-                  if (origin != null) Marker(point: origin!, width: 20, height: 20, child: const Icon(Icons.location_on, color: Colors.green)),
-                  if (destination != null) Marker(point: destination!, width: 20, height: 20, child: const Icon(Icons.flag, color: Colors.red)),
+                  if (origin != null) MapPoint(origin!, color: Colors.green),
+                  if (destination != null) MapPoint(destination!, color: Colors.red),
                 ],
-                polylines: route.isEmpty ? [] : [Polyline(points: route, strokeWidth: 4, color: Colors.blue)],
+                polylines: route.isEmpty ? [] : [MapPath(route, color: Colors.blue, width: 4)],
               ),
             ),
             ListTile(title: Text('${distance.toStringAsFixed(2)} km • $eta min'), subtitle: Text('₱${ref.read(fareServiceProvider).fareFor(distance).toStringAsFixed(2)}')),

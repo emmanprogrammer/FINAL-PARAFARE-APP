@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
@@ -14,8 +13,8 @@ class DriverDash extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
-    final tile = ref.watch(pmTilesProvider);
+    final l10n = AppLocalizations.of(context);
+    final mapAssets = ref.watch(mapAssetBundleProvider);
     final state = ref.watch(driverCtrlProvider);
     return Scaffold(
       appBar: AppBar(
@@ -25,16 +24,14 @@ class DriverDash extends ConsumerWidget {
           IconButton(onPressed: () => context.push('/settings'), icon: const Icon(Icons.settings)),
         ],
       ),
-      body: tile.when(
-        data: (path) => Column(
+      body: mapAssets.when(
+        data: (bundle) => Column(
           children: [
             Expanded(
               child: OfflineMapView(
-                tileProvider: path,
+                stylePath: bundle?.stylePath,
                 center: const LatLng(6.1164, 125.1716),
-                markers: [
-                  Marker(point: const LatLng(6.1164, 125.1716), width: 20, height: 20, child: const DecoratedBox(decoration: BoxDecoration(color: Colors.blue, shape: BoxShape.circle)))
-                ],
+                markers: const [MapPoint(LatLng(6.1164, 125.1716), color: Colors.blue)],
               ),
             ),
             Expanded(

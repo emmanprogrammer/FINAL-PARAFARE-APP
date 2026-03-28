@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
@@ -27,18 +26,18 @@ class _PassengerDashState extends ConsumerState<PassengerDash> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final tile = ref.watch(pmTilesProvider);
+    final l10n = AppLocalizations.of(context);
+    final mapAssets = ref.watch(mapAssetBundleProvider);
     final graph = ref.watch(graphProvider);
     final fare = ref.read(fareServiceProvider).fareFor(km);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.passengerDashboard), actions: [IconButton(onPressed: () => context.push('/settings'), icon: const Icon(Icons.settings))]),
       body: graph.when(
-        data: (g) => tile.when(
-          data: (path) => Stack(children: [
+        data: (g) => mapAssets.when(
+          data: (bundle) => Stack(children: [
             OfflineMapView(
-              tileProvider: path,
+              stylePath: bundle?.stylePath,
               center: const LatLng(6.1164, 125.1716),
               onTap: (p) {
                 setState(() {
@@ -62,11 +61,11 @@ class _PassengerDashState extends ConsumerState<PassengerDash> {
                 });
               },
               markers: [
-                Marker(point: const LatLng(6.1164, 125.1716), width: 20, height: 20, child: const DecoratedBox(decoration: BoxDecoration(color: Colors.blue, shape: BoxShape.circle))),
-                if (o != null) Marker(point: o!, width: 20, height: 20, child: const Icon(Icons.location_on, color: Colors.green)),
-                if (d != null) Marker(point: d!, width: 20, height: 20, child: const Icon(Icons.flag, color: Colors.red)),
+                const MapPoint(LatLng(6.1164, 125.1716), color: Colors.blue),
+                if (o != null) MapPoint(o!, color: Colors.green),
+                if (d != null) MapPoint(d!, color: Colors.red),
               ],
-              polylines: line.isEmpty ? [] : [Polyline(points: line, strokeWidth: 4, color: Colors.deepPurple)],
+              polylines: line.isEmpty ? [] : [MapPath(line, color: Colors.deepPurple, width: 4)],
             ),
             Align(
               alignment: Alignment.bottomCenter,
