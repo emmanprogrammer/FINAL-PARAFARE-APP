@@ -12,23 +12,30 @@ class SlotCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context).textTheme;
+
     return Card(
+      clipBehavior: Clip.hardEdge,
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('${l10n.slot} ${index + 1}', style: const TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            if (ride == null) ...[
-              Text(l10n.empty, style: const TextStyle(color: Colors.green)),
-              Text(l10n.tapToAddRide),
-            ] else ...[
-              Text('${ride!.originNodeId} → ${ride!.destinationNodeId}'),
-              Text('${ride!.distanceKm.toStringAsFixed(2)} km • ${ride!.etaMinutes} min'),
-              Text('₱${ride!.fare.toStringAsFixed(2)}'),
-            ]
-          ]),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('${l10n.slot} ${index + 1}', style: theme.titleSmall?.copyWith(fontWeight: FontWeight.w700), maxLines: 1, overflow: TextOverflow.ellipsis),
+              const SizedBox(height: 4),
+              if (ride == null) ...[
+                Text(l10n.empty, style: theme.bodyMedium?.copyWith(color: Colors.green), maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text(l10n.tapToAddRide, style: theme.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+              ] else ...[
+                Text('${ride!.originNodeId} → ${ride!.destinationNodeId}', style: theme.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text('${ride!.distanceKm.toStringAsFixed(2)} km • ${ride!.etaMinutes} min', style: theme.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text('₱${ride!.fare.toStringAsFixed(2)}', style: theme.bodyMedium?.copyWith(fontWeight: FontWeight.w600), maxLines: 1, overflow: TextOverflow.ellipsis),
+              ]
+            ],
+          ),
         ),
       ),
     );

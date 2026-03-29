@@ -36,9 +36,15 @@ class DriverDash extends ConsumerWidget {
             ),
             Expanded(
               child: GridView.builder(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
+                physics: const AlwaysScrollableScrollPhysics(),
                 itemCount: 6,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 1.6),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 1.25,
+                  mainAxisSpacing: 6,
+                  crossAxisSpacing: 6,
+                ),
                 itemBuilder: (_, i) => SlotCard(
                   index: i,
                   ride: state.slots[i],

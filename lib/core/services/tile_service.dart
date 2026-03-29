@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' as dev;
 import 'dart:io';
 
 import 'package:flutter/services.dart';
@@ -22,17 +23,27 @@ class TileService {
     final pmFile = File('${dir.path}/gensan.pmtiles');
     final styleFile = File('${dir.path}/style.json');
 
+    dev.log('TileService: PMTiles target path = ${pmFile.path}');
+
     if (!await pmFile.exists()) {
       final bytes = await rootBundle.load('assets/map/gensan.pmtiles');
       final data = bytes.buffer.asUint8List();
-      if (!_looksUsable(data)) return null;
+      if (!_looksUsable(data)) {
+        dev.log('TileService: PMTiles asset looks unusable (size=${data.length})');
+        return null;
+      }
       await pmFile.writeAsBytes(data, flush: true);
+      dev.log('TileService: copied PMTiles asset to ${pmFile.path}');
     }
 
     final existing = await pmFile.readAsBytes();
-    if (!_looksUsable(existing)) return null;
+    if (!_looksUsable(existing)) {
+      dev.log('TileService: existing PMTiles file unusable (size=${existing.length})');
+      return null;
+    }
 
     final tileTemplate = await _ensureLocalTileServer(pmFile.path);
+    dev.log('TileService: tile template URL = $tileTemplate');
 
     final styleRaw = await rootBundle.loadString('assets/map/style.json');
     final styleJson = jsonDecode(styleRaw) as Map<String, dynamic>;
@@ -43,16 +54,21 @@ class TileService {
     sources['gensan'] = gensan;
     styleJson['sources'] = sources;
     await styleFile.writeAsString(jsonEncode(styleJson), flush: true);
+    dev.log('TileService: style written to ${styleFile.path}');
 
     return MapAssetBundle(pmtilesPath: pmFile.path, stylePath: styleFile.path, tileTemplateUrl: tileTemplate);
   }
 
   Future<String> _ensureLocalTileServer(String pmtilesPath) async {
-    if (_server != null && _tileTemplateUrl != null) return _tileTemplateUrl!;
+    if (_server != null && _tileTemplateUrl != null) {
+      dev.log('TileService: reusing tile server at $_tileTemplateUrl');
+      return _tileTemplateUrl!;
+    }
 
     _archive ??= await PmTilesArchive.from(pmtilesPath);
     _server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
-    _tileTemplateUrl = 'http://127.0.0.1:${_server!.port}/{z}/{x}/{y}.mvt';
+    _tileTemplateUrl = 'http://127.0.0.1:${_server!.port}/{z}/{x}/{y}.pbf';
+    dev.log('TileService: started tile server on port ${_server!.port}');
 
     _server!.listen((request) async {
       try {
@@ -71,16 +87,33 @@ class TileService {
         final tileId = ZXY(z, x, y).toTileId();
         final tile = await _archive!.tile(tileId);
 
+        dev.log('TileService: serving tile z=$z x=$x y=$y id=$tileId');
         request.response.headers.contentType = ContentType('application', 'vnd.mapbox-vector-tile');
         request.response.add(tile.bytes());
         await request.response.close();
-      } catch (_) {
+      } catch (e) {
+        dev.log('TileService: tile request failed for ${request.uri.path} error=$e');
         request.response.statusCode = HttpStatus.notFound;
         await request.response.close();
       }
     });
 
+    await _waitForServerReady(_server!.port);
     return _tileTemplateUrl!;
+  }
+
+  Future<void> _waitForServerReady(int port) async {
+    final client = HttpClient();
+    try {
+      final req = await client.getUrl(Uri.parse('http://127.0.0.1:$port/0/0/0.pbf'));
+      final res = await req.close();
+      dev.log('TileService: readiness probe status=${res.statusCode}');
+      await res.drain();
+    } catch (e) {
+      dev.log('TileService: readiness probe failed: $e');
+    } finally {
+      client.close(force: true);
+    }
   }
 
   bool _looksUsable(List<int> bytes) {
