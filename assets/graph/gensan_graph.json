@@ -1,0 +1,14 @@
+{
+  "nodes": [
+    {"id": 1, "lat": 6.1164, "lng": 125.1716},
+    {"id": 2, "lat": 6.1200, "lng": 125.1800},
+    {"id": 3, "lat": 6.1250, "lng": 125.1900},
+    {"id": 4, "lat": 6.1100, "lng": 125.2000}
+  ],
+  "edges": [
+    {"from": 1, "to": 2, "distanceKm": 1.2},
+    {"from": 2, "to": 3, "distanceKm": 1.4},
+    {"from": 2, "to": 4, "distanceKm": 2.0},
+    {"from": 3, "to": 4, "distanceKm": 2.1}
+  ]
+}
