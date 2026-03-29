@@ -25,9 +25,9 @@ class _AddRideMapState extends ConsumerState<AddRideMap> {
   List<LatLng> route = [];
   double distance = 0;
   int eta = 0;
-  int? oNode;
-  int? dNode;
-  List<int> routeNodes = [];
+  String? oNode;
+  String? dNode;
+  List<String> routeNodes = [];
 
   @override
   Widget build(BuildContext context) {

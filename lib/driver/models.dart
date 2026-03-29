@@ -16,9 +16,9 @@ class Ride {
 
   final int slot;
   final String driverId;
-  final int originNodeId;
-  final int destinationNodeId;
-  final List<int> routeNodeIds;
+  final String originNodeId;
+  final String destinationNodeId;
+  final List<String> routeNodeIds;
   final double distanceKm;
   final int etaMinutes;
   final double fare;
@@ -53,12 +53,12 @@ class Ride {
 
   factory Ride.fromJson(Map<String, dynamic> json) {
     final rawNodes = json['routeNodeIds'];
-    final nodes = rawNodes is List ? rawNodes.map((e) => (e as num).toInt()).toList() : <int>[];
+    final nodes = rawNodes is List ? rawNodes.map((e) => e.toString()).toList() : <String>[];
     return Ride(
       slot: (json['slot'] as num).toInt(),
       driverId: (json['driverId'] ?? 'driver-local').toString(),
-      originNodeId: (json['originNodeId'] as num).toInt(),
-      destinationNodeId: (json['destinationNodeId'] as num).toInt(),
+      originNodeId: json['originNodeId'].toString(),
+      destinationNodeId: json['destinationNodeId'].toString(),
       routeNodeIds: nodes,
       distanceKm: (json['distanceKm'] as num).toDouble(),
       etaMinutes: (json['etaMinutes'] as num).toInt(),

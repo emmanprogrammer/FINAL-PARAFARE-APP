@@ -5,7 +5,7 @@ import 'package:latlong2/latlong.dart';
 import 'model.dart';
 
 class GraphSnap {
-  static int nearestNodeId(NavGraph graph, LatLng point) {
+  static String nearestNodeId(NavGraph graph, LatLng point) {
     var nearest = graph.nodes.keys.first;
     var nearestDist = double.infinity;
     for (final entry in graph.nodes.entries) {

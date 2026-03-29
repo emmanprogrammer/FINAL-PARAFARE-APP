@@ -1,24 +1,21 @@
 import 'model.dart';
 
 class PathResult {
-  PathResult({
-    required this.nodeIds,
-    required this.distanceKm,
-  });
-  final List<int> nodeIds;
+  PathResult({required this.nodeIds, required this.distanceKm});
+  final List<String> nodeIds;
   final double distanceKm;
 }
 
 class DijkstraPath {
-  static PathResult shortestPath(NavGraph graph, int startNodeId, int endNodeId) {
-    final distances = <int, double>{for (final id in graph.nodes.keys) id: double.infinity};
-    final previous = <int, int?>{};
+  static PathResult shortestPath(NavGraph graph, String startNodeId, String endNodeId) {
+    final distances = <String, double>{for (final id in graph.nodes.keys) id: double.infinity};
+    final previous = <String, String?>{};
     final unvisited = graph.nodes.keys.toSet();
 
     distances[startNodeId] = 0;
 
     while (unvisited.isNotEmpty) {
-      int current = unvisited.first;
+      String current = unvisited.first;
       for (final n in unvisited) {
         if (distances[n]! < distances[current]!) current = n;
       }
@@ -38,8 +35,8 @@ class DijkstraPath {
       }
     }
 
-    final path = <int>[];
-    int? cursor = endNodeId;
+    final path = <String>[];
+    String? cursor = endNodeId;
     while (cursor != null) {
       path.insert(0, cursor);
       cursor = previous[cursor];

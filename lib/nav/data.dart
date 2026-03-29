@@ -11,7 +11,7 @@ class GraphData {
     final nodesList = (decoded['nodes'] as List)
         .cast<Map<String, dynamic>>()
         .map((n) => GraphNode(
-              id: n['id'] as int,
+              id: n['id'].toString(),
               lat: (n['lat'] as num).toDouble(),
               lng: (n['lng'] as num).toDouble(),
             ));
@@ -19,8 +19,8 @@ class GraphData {
     final edges = (decoded['edges'] as List)
         .cast<Map<String, dynamic>>()
         .map((e) => GraphEdge(
-              from: e['from'] as int,
-              to: e['to'] as int,
+              from: e['from'].toString(),
+              to: e['to'].toString(),
               distanceKm: (e['distanceKm'] as num).toDouble(),
             ))
         .toList();
